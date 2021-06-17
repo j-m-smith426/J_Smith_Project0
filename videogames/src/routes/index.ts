@@ -1,6 +1,7 @@
 import { Router } from 'express';
+import { getSystems } from './Systems';
 
-import { addOneGame, getAGame } from './Videogames';
+import { addOneGame, deleteOne, getAGame, updateOne } from './Videogames';
 
 // User-route
 // const userRouter = Router();
@@ -12,11 +13,20 @@ import { addOneGame, getAGame } from './Videogames';
 //VideoGame Route
 const VGRouter = Router();
 VGRouter.post('/add', addOneGame);
-VGRouter.get('/one', getAGame)
+VGRouter.get('/one', getAGame);
+VGRouter.put('/update', updateOne);
+VGRouter.delete('/delete', deleteOne);
+
+const VGSysRouter = Router();
+VGSysRouter.post('/:NAME/add');
+VGSysRouter.get('/:NAME/all', getSystems);
+VGSysRouter.put('/:NAME/update');
+VGSysRouter.delete('/:NAME/delete');
 
 
 // Export the base-router
 const baseRouter = Router();
 
 baseRouter.use('/VideoGames', VGRouter);
+baseRouter.use('/Game', VGSysRouter);
 export default baseRouter;
