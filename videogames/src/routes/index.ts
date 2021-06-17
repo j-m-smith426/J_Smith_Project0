@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { addOneGame } from './Videogames';
+import { addOneGame, getAGame } from './Videogames';
 
 // User-route
 // const userRouter = Router();
@@ -11,7 +11,8 @@ import { addOneGame } from './Videogames';
 
 //VideoGame Route
 const VGRouter = Router();
-VGRouter.post('/single', addOneGame)
+VGRouter.post('/add', addOneGame);
+VGRouter.get('/one', getAGame)
 
 
 // Export the base-router
