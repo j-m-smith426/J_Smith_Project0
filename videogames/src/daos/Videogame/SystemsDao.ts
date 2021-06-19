@@ -1,29 +1,82 @@
-import { ddb } from "@daos/DB/Dynamo";
-import { DeleteItemCommand, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import  VideogameDao from "./VideogameDao";
 import { VGame } from "@entities/Videogame";
 export interface SysDao{
-    getAll: (name:string) => Promise<string[]>;
-    //add: (system: String) => Promise<void>;
-    //update: (systems: String[]) => Promise<void>;
-    //delete: (system: String) => Promise<void>;
+    getAllSys: (name:string) => Promise<string[]| null>;
+    addSys: (additionalSystem: string[], name:string) => Promise<void>;
+    updateSys: (updatedSystems: string[], name:string) => Promise<void>;
+    deleteSys: (deletedSystem: string, name:string) => Promise<void>;
 
 }
 const VGameDao = new VideogameDao();
 class SystemDao implements SysDao{
     private TableName = 'VideoGameLIST';
 
-    public async getAll(name:string): Promise<string[]>{
+    public async getAllSys(name:string): Promise<string[]| null>{
             console.log(name);
             let gSystems:VGame|null = await VGameDao.getOne(name);
-            let sysD = ["",""];
+            console.log(gSystems);
+            
             if(gSystems){
             return gSystems.gameSYSTEM;
+            }else {
+                return null;
             }
-            return sysD;
+            
 
     }
 
+    public async addSys(additionalSystem: string[], name:string): Promise<void>{
+        let game = await VGameDao.getOne(name);
+        if(game){
+            let Sys:string[] = game.gameSYSTEM;
+        
+            additionalSystem.forEach((presntSys) => {
+                if(!Sys.includes(presntSys)){
+                    
+                    Sys.push(presntSys);
+                }
+            });
+            game.gameSYSTEM = Sys;
+            await VGameDao.add(game);
+            console.log('Systems added');
+            
+        }else {
+            console.log("Game not found");
+        }
+    }
+
+    public async updateSys(updatedSystems:string[], name:string): Promise<void> {
+        let game = await VGameDao.getOne(name);
+        if(game){
+            game.gameSYSTEM = updatedSystems;
+            await VGameDao.add(game);
+            console.log("Systems Updated")
+        }else{
+            console.log("Game not found");
+        }
+    }
+
+    public async deleteSys(deletedSystem:string, name:string): Promise<void>{
+        let game = await VGameDao.getOne(name);
+        if(game){
+            let oldSystems = game.gameSYSTEM;
+            let updatedSystems:string[] = [];
+            if(oldSystems.includes(deletedSystem)){
+                oldSystems.forEach((oldSys) => {
+                    if(oldSys !== deletedSystem){
+                        updatedSystems.push(oldSys);
+                    }
+                });
+            }else {
+                console.log(`${name} dose not have system ${deletedSystem}`);
+            }
+            game.gameSYSTEM = updatedSystems;
+            await VGameDao.add(game);
+            console.log("Systems Updated")
+        }else{
+            console.log("Game not found");
+        }
+    }
 
 
 }

@@ -6,7 +6,7 @@ declare module 'express' {
         body: {
             game: VGame,
             //user: IUser
-            GSystems: String[]
+            GSystems: string[]
         };
     }
 }

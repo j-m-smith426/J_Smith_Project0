@@ -1,6 +1,6 @@
 import  Videogame, { VGame } from "@entities/Videogame";
 import { ddb, ddbDoc } from "@daos/DB/Dynamo";
-import { DeleteCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 
 
 export interface VgameDao{
@@ -40,8 +40,8 @@ class VideogameDao implements VgameDao{
         if(data.Items !== undefined){
              //parse data into Videogame object
             for(let i of data.Items){    
-                Vdata = new Videogame( i.gameNAME,i.ID, i.gameSYSTEM,i.GENRA);
-                console.log("Success", Vdata);
+                Vdata = new Videogame( i.gameNAME,i.ID, i.gameSYSTEM,i.GENRA, i.MultiPlayer);
+                console.log("Success, Game retrieved", Vdata);
                 return Promise.resolve(Vdata);
             }
         }
@@ -57,6 +57,7 @@ class VideogameDao implements VgameDao{
     public async add(vGame: VGame): Promise<void>{
         //console.log(vGame.NAME); //take in game object
         //Parse game object into paramaters
+        let MultiVale:boolean = vGame.Multiplayer.valueOf()
         
         const params = {
             TableName: this.TableName,
@@ -65,7 +66,8 @@ class VideogameDao implements VgameDao{
                 ID: vGame.ID,
                 gameNAME: vGame.gameNAME,
                 gameSYSTEM: vGame.gameSYSTEM,
-                GENRA:  vGame.GENRA
+                GENRA:  vGame.GENRA,
+                MultiPlayer: MultiVale
             }
         };
         console.log(params.Item);
@@ -97,25 +99,19 @@ class VideogameDao implements VgameDao{
         try {
             const data = await ddbDoc.send(new ScanCommand(params));
                 if(data.Items){
-                console.log("Success. Item details: ", data.Items);
+                console.log("Success. Game Found: ", data.Items);
                 //id = data.Items.length
              //parse data into Videogame object
              let vGameDb:Videogame;
              for(let i of data.Items){   
-                vGameDb = new Videogame(i.gameNAME, i.ID, i.gameSYSTEM, i.GENRA);
-             
-                console.log(vGame);
-                // look at later
+                vGameDb = new Videogame(i.gameNAME, i.ID, i.gameSYSTEM, i.GENRA, i.Multiplayer);
+                //console.log(vGame);
+                // assign new values to parameters
                 if(vGameDb){
                     Object.entries(vGame).forEach(([key, item]) => {
-                        if(vGameDb){
-                            if(key === 'GENRA'){
-                                vGameDb.GENRA = item;
-                            }
-                        }
-                
+                            vGameDb[`${key}`] = item;            
                     })
-        
+                // Overwrite game with new information
                 await this.add(vGameDb);
                 console.log("Success - item added or updated", vGameDb);
         }}}
@@ -181,7 +177,7 @@ class VideogameDao implements VgameDao{
                 //id = data.Items.length
              //parse data into Videogame object and add to games
              for(let i of data.Items){
-                let Vdata:VGame = new Videogame( i.gameNAME,i.ID, i.gameSYSTEM,i.GENRA);
+                let Vdata:VGame = new Videogame( i.gameNAME,i.ID, i.gameSYSTEM,i.GENRA, i.Multiplayer);
                 games.push(Vdata);
              }
                 }

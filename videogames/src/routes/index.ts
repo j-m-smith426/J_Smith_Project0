@@ -1,14 +1,7 @@
 import { Router } from 'express';
-import { getSystems } from './Systems';
+import { addSystems, deleteSystems, getSystems, updateSystems } from './Systems';
 
 import { addOneGame, deleteOne, getAGame, updateOne } from './Videogames';
-
-// User-route
-// const userRouter = Router();
-// userRouter.get('/all', getAllUsers);
-// userRouter.post('/add', addOneUser);
-// userRouter.put('/update', updateOneUser);
-// userRouter.delete('/delete/:id', deleteOneUser);
 
 /**VideoGame Route
  * /add Add One Game
@@ -28,10 +21,10 @@ VGRouter.delete('/delete', deleteOne);
  * /delete Delete specified system of :NAME game
  */
 const VGSysRouter = Router();
-VGSysRouter.post('/:NAME/add');
+VGSysRouter.post('/:NAME/add', addSystems);
 VGSysRouter.get('/:NAME/all', getSystems);
-VGSysRouter.put('/:NAME/update');
-VGSysRouter.delete('/:NAME/delete');
+VGSysRouter.put('/:NAME/update', updateSystems);
+VGSysRouter.delete('/:NAME/delete', deleteSystems);
 
 
 // Export the base-router
