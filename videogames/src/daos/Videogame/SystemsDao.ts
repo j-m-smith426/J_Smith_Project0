@@ -15,10 +15,10 @@ class SystemDao implements SysDao{
 
     public async getAll(name:string): Promise<string[]>{
             console.log(name);
-            let systems:VGame|null = await VGameDao.getOne(name);
+            let gSystems:VGame|null = await VGameDao.getOne(name);
             let sysD = ["",""];
-            if(systems){
-            return systems.SYSTEM;
+            if(gSystems){
+            return gSystems.gameSYSTEM;
             }
             return sysD;
 

@@ -1,20 +1,21 @@
 export interface VGame{
-    NAME: string;
+    gameNAME: string;
     ID: number;
-    SYSTEM: string[];
+    gameSYSTEM: string[];
     GENRA: string;
+    //[key:string]: any;
 }
 
 class Videogame implements VGame{
-    public NAME: string;
+    public gameNAME: string;
     public ID: number;
-    public SYSTEM: string[];
+    public gameSYSTEM: string[];
     public GENRA: string;
 
     constructor(name:string, id:number, system:string[], genra:string){
-        this.NAME = name;
+        this.gameNAME = name;
         this.ID = id;
-        this.SYSTEM = system;
+        this.gameSYSTEM = system;
         this.GENRA = genra;
     }
 }

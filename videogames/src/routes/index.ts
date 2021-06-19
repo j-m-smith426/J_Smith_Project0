@@ -10,13 +10,23 @@ import { addOneGame, deleteOne, getAGame, updateOne } from './Videogames';
 // userRouter.put('/update', updateOneUser);
 // userRouter.delete('/delete/:id', deleteOneUser);
 
-//VideoGame Route
+/**VideoGame Route
+ * /add Add One Game
+ * /getOne Get one Game
+ * /update Update a game
+ * /delete Delete a game
+ */
 const VGRouter = Router();
 VGRouter.post('/add', addOneGame);
-VGRouter.get('/one', getAGame);
+VGRouter.get('/getOne', getAGame);
 VGRouter.put('/update', updateOne);
 VGRouter.delete('/delete', deleteOne);
-
+/** Systems Router
+ * /all Get all systems of :NAME game
+ * /add Add a system to :NAME game
+ * /update Update all systems of :NAME game
+ * /delete Delete specified system of :NAME game
+ */
 const VGSysRouter = Router();
 VGSysRouter.post('/:NAME/add');
 VGSysRouter.get('/:NAME/all', getSystems);
