@@ -24,6 +24,7 @@ class VideogameDao implements VgameDao{
      */
     public async getOne(name: string): Promise<VGame|null>{
         //Set search peramaters
+        
         const params = {
             TableName: this.TableName,
             IndexName: 'gameNAME-index',
@@ -55,10 +56,14 @@ class VideogameDao implements VgameDao{
      * return void
      */
     public async add(vGame: VGame): Promise<void>{
-        //console.log(vGame.NAME); //take in game object
-        //Parse game object into paramaters
+         //take in game object
+        // //Check if it is already in the DB.
+        // let vGameDB = await this.getOne(vGame.gameNAME);
+        // if(vGameDB){
+        //     vGame = vGameDB;
+        // }
+         //Parse game object into paramaters
         let MultiVale:boolean = vGame.Multiplayer.valueOf()
-        
         const params = {
             TableName: this.TableName,
             Item: 
@@ -128,19 +133,21 @@ class VideogameDao implements VgameDao{
     public async delete(name: string): Promise<void>{
         // Check if game is in DB
         let vGameDb = await this.getOne(name);
+        console.log(vGameDb);
         if(vGameDb){
             // Assign values to params
             const params = {
                 TableName: this.TableName,
                 Key: {
-                    gameNAME: vGameDb.gameNAME,
+                    ID: vGameDb.ID,
+                    //gameNAME: vGameDb.gameNAME
                    
                 }
             };
             //Send data to delete game
             try {
-                const data = await ddb.send(new DeleteCommand(params));
-                console.log("Success, table deleted", data);
+                const data = await ddbDoc.send(new DeleteCommand(params));
+                console.log("Success, game deleted", data);
                
               } catch (err) {
                 if (err && err.code === "ResourceNotFoundException") {
@@ -150,7 +157,7 @@ class VideogameDao implements VgameDao{
                 }
               }
         }else {
-            console.log("Game not found");
+            throw new Error("Game not found");
         }
     }
     /**

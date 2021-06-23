@@ -81,8 +81,10 @@ export async function deleteSystems(req:Request, res: Response){
             error: paramMissingError,
         });
     }
-    oldSystems.forEach( async (oldSys:string) => {
-        await SDao.deleteSys(oldSys,NAME);
-    });
+    try{
+    await SDao.deleteSys(oldSystems,NAME);
     return res.status(OK).end();    
+    }catch(err){
+        res.send(err);
+    }
 }

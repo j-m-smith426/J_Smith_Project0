@@ -48,7 +48,13 @@ export async function getAGame(req: Request, res: Response) {
     }
     // Retrieve game information
    let game:VGame|null = await VGameDao.getOne(gameNAME);
+   if(game){
     return res.status(OK).json(game).end();
+   }else{
+       res.status(BAD_REQUEST).json({
+          error: "Game not found"
+        }).end();
+   }
 
 }
 /** update a games data
